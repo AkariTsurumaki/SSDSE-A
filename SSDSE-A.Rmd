@@ -1,0 +1,26 @@
+---
+title: "SSDSE-A"
+author: "Akari Tsurumaki"
+date: "2023-07-03"
+output: pdf_document
+---
+
+
+```{r packages-data, include = F, message = F}
+# load necessary packages
+#install.packages("stargazer")
+library(tidyverse)
+library(class)
+library(tree)
+library(stargazer)
+#install.packages("tidycensus")
+library(tidycensus)
+library(ggplot2)
+#install.packages("ggspatial")
+library(ggspatial)
+
+
+# load data
+
+
+```

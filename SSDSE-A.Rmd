@@ -2,25 +2,83 @@
 title: "SSDSE-A"
 author: "Akari Tsurumaki"
 date: "2023-07-03"
-output: pdf_document
+output:
+  html_document:
+    df_print: paged
 ---
 
 
 ```{r packages-data, include = F, message = F}
 # load necessary packages
-#install.packages("stargazer")
 library(tidyverse)
 library(class)
 library(tree)
-library(stargazer)
-#install.packages("tidycensus")
-library(tidycensus)
 library(ggplot2)
-#install.packages("ggspatial")
-library(ggspatial)
-
+library(jpndistrict)
 
 # load data
+#dat <- read.csv("SSDSE-A-2023.csv")
+#data <- read.table("SSDSE-A-2023.csv", encoding = "UTF-8")
+data <-read.csv(file('人口と医療体制.csv',encoding='Shift_JIS'))
 
 
 ```
+
+```{r EDA}
+pop_controlled <- data %>%
+  filter(総人口 < 100000)
+pop_controlled <- mutate(pop_controlled, doc_per_capita =　総人口/医師数)
+
+ggplot(data, aes(x = 総人口, y = 一般病院数)) + geom_point() + 
+  labs(title = "総人口と一般病院数", x = "総人口", y = "一般病院数") +
+  scale_x_continuous(labels = scales::comma) +
+  scale_y_continuous(labels = scales::comma)
+
+ggplot(pop_controlled, aes(x = 総人口, y = 一般病院数)) + geom_point() + 
+  labs(title = "総人口と一般病院数", x = "総人口", y = "一般病院数") +
+  scale_x_continuous(labels = scales::comma) +
+  scale_y_continuous(labels = scales::comma)
+
+ggplot(data, aes(x = 総人口, y = 医師数)) + geom_point() + 
+  labs(title = "自治体別総人口と医師数", x = "総人口", y = "医師数") +
+  scale_x_continuous(labels = scales::comma) +
+  scale_y_continuous(labels = scales::comma)
+
+#医師数がゼロのところがあるのでこれでは無限になってしまう
+data <- mutate(data, doc_per_capita =　総人口/医師数)
+
+# Calculate the average of a column
+average_value <- mean(data$doc_per_capita)
+average_value
+
+ggplot(data, aes(x = 総人口, y = doc_per_capita)) + geom_point() + 
+  labs(title = "自治体別総人口と医師一人あたり人口", x = "総人口", y = "医師一人あたり人口") +
+  scale_x_continuous(labels = scales::comma) +
+  scale_y_continuous(labels = scales::comma)
+
+ggplot(pop_controlled, aes(x = 総人口, y = doc_per_capita)) + geom_point() + 
+  labs(title = "自治体別総人口と医師一人あたり人口", x = "総人口", y = "医師一人あたり人口") +
+  scale_x_continuous(labels = scales::comma) +
+  scale_y_continuous(labels = scales::comma)
+
+
+```
+
+
+```{r maps}
+head(jpnprefs)
+
+#install.packages("jpndistrict")
+#install.packages("devtools")
+#devtools::install_github("uribo/pndistrict")
+
+kyoto <- jpn_pref(26)
+head(kyoto)
+kyoto %>% 
+  ggplot() + 
+  geom_sf()
+
+
+
+```
+
